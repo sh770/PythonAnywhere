@@ -1,0 +1,29 @@
+name: PythonAnywhere Auto-Click
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 8 1 */3 *"
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: |
+          corepack enable
+          pnpm install
+
+      - name: Run script
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          ACCOUNTS_JSON: ${{ secrets.ACCOUNTS_JSON }}
+          GITHUB_ACTIONS: true
+        run: pnpm exec node script.js
