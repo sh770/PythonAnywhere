@@ -25,11 +25,11 @@ jobs:
           node-version: 20
           cache: 'pnpm'
 
-      - name: Install pnpm
-        run: npm install -g pnpm
+  - name: Install pnpm
+  run: npm install -g pnpm
 
-      - name: Install dependencies
-        run: pnpm install
+- name: Install dependencies
+  run: pnpm install --no-frozen-lockfile
 
-      - name: Run automation script
-        run: pnpm exec node script.mjs
+- name: Run automation script
+  run: pnpm exec node script.mjs
