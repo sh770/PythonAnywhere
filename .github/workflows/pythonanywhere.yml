@@ -26,4 +26,4 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           ACCOUNTS_JSON: ${{ secrets.ACCOUNTS_JSON }}
           GITHUB_ACTIONS: true
-        run: pnpm exec node script.js
+        run: pnpm exec node script.mjs
