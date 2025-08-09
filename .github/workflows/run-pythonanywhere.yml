@@ -1,8 +1,8 @@
 name: Run PythonAnywhere Auto-Click
 
 on:
-  workflow_dispatch: # מאפשר להריץ ידנית
-  schedule:          # הרצה אוטומטית - כאן דוגמה פעם ב-3 חודשים
+  workflow_dispatch: # אפשרות להרצה ידנית
+  schedule:
     - cron: "0 8 1 */3 *" # בשעה 08:00 UTC ביום הראשון של כל חודש שלישי
 
 jobs:
@@ -23,13 +23,22 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'pnpm'
 
-  - name: Install pnpm
-  run: npm install -g pnpm
+      - name: Install pnpm
+        run: npm install -g pnpm
 
-- name: Install dependencies
-  run: pnpm install --no-frozen-lockfile
+      - name: Verify secrets exist
+        run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ] || [ -z "$ACCOUNTS_JSON" ]; then
+            echo "❌ One or more required secrets are missing."
+            exit 1
+          fi
 
-- name: Run automation script
-  run: pnpm exec node script.mjs
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Create accounts.json from secret
+        run: echo "$ACCOUNTS_JSON" > accounts.json
+
+      - name: Run automation script
+        run: pnpm exec node script.mjs
