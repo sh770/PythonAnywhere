@@ -1,0 +1,35 @@
+name: Run PythonAnywhere Auto-Click
+
+on:
+  workflow_dispatch: # מאפשר להריץ ידנית
+  schedule:          # הרצה אוטומטית - כאן דוגמה פעם ב-3 חודשים
+    - cron: "0 8 1 */3 *" # בשעה 08:00 UTC ביום הראשון של כל חודש שלישי
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    env:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      ACCOUNTS_JSON: ${{ secrets.ACCOUNTS_JSON }}
+      GITHUB_ACTIONS: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Run automation script
+        run: pnpm exec node script.mjs
