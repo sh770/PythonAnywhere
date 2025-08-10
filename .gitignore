@@ -1,4 +1,4 @@
+# Ignore build artifacts
 .env
-node_modules
 accounts.json
-.env
+/node_modules
