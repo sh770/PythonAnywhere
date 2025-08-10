@@ -1,7 +1,10 @@
 import { chromium } from 'playwright';
-import { post } from 'axios';
 import dotenv from 'dotenv';
+import axios from 'axios'; // ייבוא כל הספרייה
 
+
+
+await axios.post(url, { chat_id: TELEGRAM_CHAT_ID, text: message });
 dotenv.config(); // טוען משתני סביבה מקובץ .env אם קיים
 
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
