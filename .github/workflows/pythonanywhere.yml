@@ -1,0 +1,36 @@
+name: PythonAnywhere Auto-Click
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 8 1 */2 *"
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    env:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      ACCOUNTS_JSON: ${{ secrets.ACCOUNTS_JSON }}
+      GITHUB_ACTIONS: true
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Enable Corepack and install pnpm
+        run: |
+          corepack enable
+          pnpm install --no-frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+
+      - name: Run script
+        run: pnpm exec node script.mjs

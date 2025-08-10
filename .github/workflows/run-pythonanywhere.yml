@@ -1,0 +1,47 @@
+name: Run PythonAnywhere Auto-Click
+
+on:
+  workflow_dispatch: # אפשר להריץ ידנית
+  schedule:
+    - cron: "0 8 1 */2 *" # כל שלושה חודשים ב-08:00 UTC
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    env:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      ACCOUNTS_JSON: ${{ secrets.ACCOUNTS_JSON }}
+      GITHUB_ACTIONS: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Verify secrets exist
+        run: |
+          if [ -z "$TELEGRAM_BOT_TOKEN" ] || [ -z "$TELEGRAM_CHAT_ID" ] || [ -z "$ACCOUNTS_JSON" ]; then
+            echo "❌ One or more required secrets are missing."
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps
+
+      - name: Create accounts.json from secret
+        run: echo "$ACCOUNTS_JSON" > accounts.json
+
+      - name: Run automation script
+        run: pnpm exec node script.mjs
