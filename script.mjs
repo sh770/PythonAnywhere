@@ -1,44 +1,23 @@
 import { chromium } from 'playwright';
-import dotenv from 'dotenv';
-import axios from 'axios'; // ייבוא כל הספרייה
+import { readFileSync } from 'fs';
+import axios from 'axios'; // ייבוא המודול כולו
+import 'dotenv/config';
 
-
-
-await axios.post(url, { chat_id: TELEGRAM_CHAT_ID, text: message });
-dotenv.config(); // טוען משתני סביבה מקובץ .env אם קיים
-
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '';
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '';
-const GITHUB_ACTIONS = process.env.GITHUB_ACTIONS === 'true';
-
-// קריאת רשימת חשבונות
-let accounts;
-try {
-    if (process.env.ACCOUNTS_JSON) {
-        accounts = JSON.parse(process.env.ACCOUNTS_JSON);
-    } else {
-        // fallback - לקריאה מקובץ accounts.json להרצה מקומית
-        const { readFileSync } = await import('fs');
-        accounts = JSON.parse(readFileSync('accounts.json', 'utf-8'));
-    }
-} catch (err) {
-    console.error("❌ לא הצלחנו לקרוא את רשימת החשבונות:", err.message);
-    process.exit(1);
-}
+const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || '...';
+const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID || '...';
+const accounts = process.env.GITHUB_ACTIONS
+    ? JSON.parse(process.env.ACCOUNTS_JSON)
+    : JSON.parse(readFileSync('accounts.json', 'utf-8'));
 
 const loginUrl = 'https://www.pythonanywhere.com/login/';
 
-// פונקציה לשליחת הודעה לטלגרם
+// פונקציית שליחת הודעה לטלגרם
 async function sendTelegramMessage(message) {
-    if (!TELEGRAM_BOT_TOKEN || !TELEGRAM_CHAT_ID) {
-        console.error("⚠️ לא הוגדרו פרטי טלגרם");
-        return;
-    }
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
     try {
-        await post(url, { chat_id: TELEGRAM_CHAT_ID, text: message });
+        await axios.post(url, { chat_id: TELEGRAM_CHAT_ID, text: message });
     } catch (err) {
-        console.error("❌ כשל בשליחת הודעה לטלגרם:", err.message);
+        console.error("Failed to send Telegram message:", err.message);
     }
 }
 
