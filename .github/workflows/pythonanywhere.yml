@@ -5,6 +5,11 @@ on:
   schedule:
     - cron: "0 8 1 */2 *"
 
+# הוספת הרשאות ל-GITHUB_TOKEN
+permissions:
+  contents: write    # הרשאה לקרוא ולכתוב לתוכן ה-repo
+  workflows: write   # הרשאה להריץ ולהשפיע על workflows
+
 jobs:
   run-script:
     runs-on: ubuntu-latest
