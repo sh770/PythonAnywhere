@@ -3,7 +3,7 @@ name: Run PythonAnywhere Auto-Click
 on:
   workflow_dispatch: # אפשר להריץ ידנית
   schedule:
-    - cron: "0 8 1 */2 *" # כל שלושה חודשים ב-08:00 UTC
+    - cron: "0 8 1 */2 *" # כל חודשיים ב-08:00 UTC
 
 jobs:
   run-script:
